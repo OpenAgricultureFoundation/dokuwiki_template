@@ -1,7 +1,7 @@
-base     openag
-author   Rikuo Hasegawa
-email    rikuo@media.mit.edu
-date     2017-04-21
-name     OpenAg Wiki Template
-desc     Template for the OpenAg Wiki.
-url      https://github.com/OpenAgInitiative/dokuwiki_template
+base     dokuwiki
+author   Anika Henke
+email    anika@selfthinker.org
+date     2015-07-26
+name     DokuWiki Template
+desc     DokuWiki's default template since 2012
+url      http://www.dokuwiki.org/template:dokuwiki

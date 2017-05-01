@@ -9,14 +9,12 @@
 
 // must be run from within DokuWiki
 if (!defined('DOKU_INC')) die();
-@require_once(dirname(__FILE__).'/tpl_functions.php'); /* include hook for template functions */
 header('X-UA-Compatible: IE=edge,chrome=1');
 
 ?><!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']?>"
- lang="<?php echo $conf['lang']?>" dir="<?php echo $lang['direction'] ?>" class="no-js">
+<html lang="<?php echo $conf['lang']?>" dir="<?php echo $lang['direction'] ?>" class="no-js">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
     <title>
         <?php echo hsc(tpl_img_getTag('IPTC.Headline',$IMG))?>
         [<?php echo strip_tags($conf['title'])?>]
@@ -26,70 +24,100 @@ header('X-UA-Compatible: IE=edge,chrome=1');
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <?php echo tpl_favicon(array('favicon', 'mobile')) ?>
     <?php tpl_includeFile('meta.html') ?>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 
 <body>
-    <!--[if lte IE 8 ]><div id="IE8"><![endif]-->
-    <div id="dokuwiki__detail" class="<?php echo tpl_classes(); ?>">
-        <?php html_msgarea() ?>
+    <div id="dokuwiki__site"><div id="dokuwiki__top" class="site <?php echo tpl_classes(); ?>">
 
-        <?php if($ERROR): print $ERROR; ?>
-        <?php else: ?>
+        <?php include('tpl_header.php') ?>
 
-            <?php if($REV) echo p_locale_xhtml('showrev');?>
-            <h1><?php echo hsc(tpl_img_getTag('IPTC.Headline', $IMG))?></h1>
+        <div class="wrapper group" id="dokuwiki__detail">
 
-            <div class="content group">
-                <?php tpl_img(900, 700); /* the image; parameters: maximum width, maximum height (and more) */ ?>
+            <!-- ********** CONTENT ********** -->
+            <div id="dokuwiki__content"><div class="pad group">
+                <?php html_msgarea() ?>
 
-                <div class="img_detail">
-                    <h2><?php print nl2br(hsc(tpl_img_getTag('simple.title'))); ?></h2>
+                <?php if(!$ERROR): ?>
+                    <div class="pageId"><span><?php echo hsc(tpl_img_getTag('IPTC.Headline',$IMG)); ?></span></div>
+                <?php endif; ?>
 
-                    <?php if(function_exists('tpl_img_meta')): ?>
-                        <?php tpl_img_meta(); ?>
-                    <?php else: /* deprecated since Release 2014-05-05 */ ?>
-                        <dl>
+                <div class="page group">
+                    <?php tpl_flush() ?>
+                    <?php tpl_includeFile('pageheader.html') ?>
+                    <!-- detail start -->
+                    <?php
+                    if($ERROR):
+                        echo '<h1>'.$ERROR.'</h1>';
+                    else: ?>
+                        <?php if($REV) echo p_locale_xhtml('showrev');?>
+                        <h1><?php echo nl2br(hsc(tpl_img_getTag('simple.title'))); ?></h1>
+
+                        <?php tpl_img(900,700); /* parameters: maximum width, maximum height (and more) */ ?>
+
+                        <div class="img_detail">
+                            <?php tpl_img_meta(); ?>
+                            <dl>
                             <?php
-                                $config_files = getConfigFiles('mediameta');
-                                foreach ($config_files as $config_file) {
-                                    if(@file_exists($config_file)) {
-                                        include($config_file);
-                                    }
+                            echo '<dt>'.$lang['reference'].':</dt>';
+                            $media_usage = ft_mediause($IMG,true);
+                            if(count($media_usage) > 0){
+                                foreach($media_usage as $path){
+                                    echo '<dd>'.html_wikilink($path).'</dd>';
                                 }
-
-                                foreach($fields as $key => $tag){
-                                    $t = array();
-                                    if (!empty($tag[0])) {
-                                        $t = array($tag[0]);
-                                    }
-                                    if(is_array($tag[3])) {
-                                        $t = array_merge($t,$tag[3]);
-                                    }
-                                    $value = tpl_img_getTag($t);
-                                    if ($value) {
-                                        echo '<dt>'.$lang[$tag[1]].':</dt><dd>';
-                                        if ($tag[2] == 'date') {
-                                            echo dformat($value);
-                                        } else {
-                                            echo hsc($value);
-                                        }
-                                        echo '</dd>';
-                                    }
-                                }
+                            }else{
+                                echo '<dd>'.$lang['nothingfound'].'</dd>';
+                            }
                             ?>
-                        </dl>
+                            </dl>
+                            <p><?php echo $lang['media_acl_warning']; ?></p>
+                        </div>
+                        <?php //Comment in for Debug// dbg(tpl_img_getTag('Simple.Raw'));?>
                     <?php endif; ?>
-                    <?php //Comment in for Debug// dbg(tpl_img_getTag('Simple.Raw')); ?>
                 </div>
-            </div><!-- /.content -->
+                <!-- detail stop -->
+                <?php tpl_includeFile('pagefooter.html') ?>
+                <?php tpl_flush() ?>
 
-            <p class="back">
-                <?php tpl_action('mediaManager', 1) ?><br />
-                &larr; <?php tpl_action('img_backto', 1) ?>
-            </p>
+                <?php /* doesn't make sense like this; @todo: maybe add tpl_imginfo()?
+                <div class="docInfo"><?php tpl_pageinfo(); ?></div>
+                */ ?>
 
-        <?php endif; ?>
-    </div>
-    <!--[if lte IE 8 ]></div><![endif]-->
+            </div></div><!-- /content -->
+
+            <hr class="a11y" />
+
+            <!-- PAGE ACTIONS -->
+            <?php if (!$ERROR): ?>
+                <div id="dokuwiki__pagetools">
+                    <h3 class="a11y"><?php echo $lang['page_tools']; ?></h3>
+                    <div class="tools">
+                        <ul>
+                            <?php
+                                $data = array(
+                                    'view' => 'detail',
+                                    'items' => array(
+                                        'mediaManager' => tpl_action('mediaManager', true, 'li', true, '<span>', '</span>'),
+                                        'img_backto' =>   tpl_action('img_backto',   true, 'li', true, '<span>', '</span>'),
+                                    )
+                                );
+
+                                // the page tools can be amended through a custom plugin hook
+                                $evt = new Doku_Event('TEMPLATE_PAGETOOLS_DISPLAY', $data);
+                                if($evt->advise_before()) {
+                                    foreach($evt->data['items'] as $k => $html) echo $html;
+                                }
+                                $evt->advise_after();
+                                unset($data);
+                                unset($evt);
+                            ?>
+                        </ul>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div><!-- /wrapper -->
+
+        <?php include('tpl_footer.php') ?>
+    </div></div><!-- /site -->
 </body>
 </html>
