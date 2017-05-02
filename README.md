@@ -1,5 +1,7 @@
 # OpenAg DokuWiki Template
 
+![](https://travis-ci.org/OpenAgInitiative/dokuwiki_template.svg?branch=master)
+
 ## Run a Dev Container(docker)
 
 ```bash
