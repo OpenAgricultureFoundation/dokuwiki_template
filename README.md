@@ -1,28 +1,29 @@
-# Customizing DokuWiki Templates
+# OpenAg DokuWiki Template
 
-[The Bible: DokuWiki Template Development](https://www.dokuwiki.org/devel:templates)
-DokuWiki Version: __2016-06-26a "Elenor of Tsort"__
+## Run a Dev Container(docker)
 
-## Releasing Themes
+```bash
+	# You need a ssh-config with a valid Host for the wiki server.
+	$DOKUWIKI=${your_host_name}
+	$./sync
+	$./start_server
 
-[githubにpushで、さくらサーバーに自動デプロイ](http://qiita.com/prex-uchida/items/f8bc05eb91b944b6214e) (Japanese)
-Ideally, we can set up an environment where if we push to the github master branch, a webhook calls the Wiki server and it will trigger a git pull.
-
-```php
-<?
-chdir('lib/tpl/openag');
-exec('/usr/bin/git pull', $op, $rv);
-print_r($op);
-print_r($rv);
-?>
+	# There should be a copy of the wiki running on http://localhost/
 ```
 
-## DokuWiki Template Basics
+## Releasing/Deploying
 
+Ideally, we can set up an environment where if we push to the github master branch.
+I used TravisCI to do this, see more here: [https://goonytoons.com/blog/index.php/2017/05/02/simple-deploy-travis/](https://goonytoons.com/blog/index.php/2017/05/02/simple-deploy-travis/)
+
+# DokuWiki Template Basics
+
+- [The Bible: DokuWiki Template Development](https://www.dokuwiki.org/devel:templates)
+DokuWiki Version: __2016-06-26a "Elenor of Tsort"__
 - DokuWiki themes live under `lib/tpl` directory.
 - Theme name should be `openag` but the repo will be called `dokuwiki_template` on github
 
-### The Template Directory: `/var/www/html/lib/tpl/openag`
+## The Template Directory: `/var/www/html/lib/tpl/openag`
 
 - You can put the `favicon.ico` here.
 - You can also save `*.js` files under your template.

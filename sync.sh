@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOKUWIKI="openag-wiki"
+DOKUWIKI="${DOKUWIKI:-openag-wiki}"
 
 # Copy recommended file
 rsync -av \
