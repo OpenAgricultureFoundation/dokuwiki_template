@@ -1,0 +1,11 @@
+language: php
+php:
+  - 7.0
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_b3b8deca1fd8_key -iv $encrypted_b3b8deca1fd8_iv -in openag-wiki.enc -out openag-wiki -d
+install: true
+
+script: true
+after_success:
+  - ./deploy.sh

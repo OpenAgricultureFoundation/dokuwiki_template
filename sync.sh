@@ -1,12 +1,14 @@
 #!/bin/bash
 
+DOKUWIKI="openag-wiki"
+
 # Copy recommended file
 rsync -av \
   --exclude 'cache'\
   --exclude 'index'\
   --exclude 'locks'\
   --exclude 'tmp'\
-  openag-wiki:/var/www/html/data/ ./DokuWiki/data
+  $DOKUWIKI:/var/www/html/data/ ./DokuWiki/data
 
 rsync -av openag-wiki:/var/www/html/conf/ DokuWiki/conf
 rsync -av openag-wiki:/var/www/html/lib/plugins/ DokuWiki/lib/plugins
