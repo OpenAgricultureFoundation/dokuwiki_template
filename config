@@ -2,3 +2,4 @@ Host openag-wiki
       Hostname 45.55.206.71
       User root
       IdentityFile ~/.ssh/openag-wiki
+      StrictHostKeyChecking no
